@@ -1,0 +1,12 @@
+const fs = require('fs');
+const path = './entry.png';
+const stats = fs.statSync(path);
+console.log(`Size: ${stats.size} bytes`);
+if (stats.size > 1048576) throw new Error('File too large');
+const buf = fs.readFileSync(path);
+if (buf[0] !== 0x89 || buf[1] !== 0x50 || buf[2] !== 0x4E || buf[3] !== 0x47) throw new Error('Not a PNG');
+const width = buf.readUInt32BE(16);
+const height = buf.readUInt32BE(20);
+console.log(`Dimensions: ${width}x${height}`);
+if (width > 1024 || height > 1024) throw new Error('Dimensions too large');
+console.log('Verification passed');
